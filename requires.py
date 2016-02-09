@@ -21,24 +21,41 @@ class ZookeeperRequires(RelationBase):
     def joined(self):
         conv = self.conversation()
         conv.set_state('{relation_name}.connected')
+        conv.remove_state('{relation_name}.departing')
+
 
     @hook('{requires:zookeeper}-relation-changed')
     def changed(self):
         conv = self.conversation()
-        if self.get_zookeeper_ip() and self.get_zookeeper_port():
+        if self.get_zookeeper_units():
+            conv.set_state('{relation_name}.joining')
             conv.set_state('{relation_name}.available')
+            
 
-    @hook('{requires:zookeeper}-relation-{departed,broken}')
+    @hook('{requires:zookeeper}-relation-departed')
     def departed(self):
         conv = self.conversation()
-        conv.remove_state('{relation_name}.connected')
         conv.remove_state('{relation_name}.available')
+        conv.remove_state('{relation_name}.connected')
+        conv.set_state('{relation_name}.departing')
 
-    def get_zookeeper_ip(self):
-        conv = self.conversation()
-        return conv.get_remote('private-address')
 
-    def get_zookeeper_port(self):
-        conv = self.conversation()
-        return conv.get_remote('port')
+    def dismiss_departing(self):
+        for conv in self.conversations():
+            conv.remove_state('{relation_name}.departing')
 
+
+    def dismiss_joining(self):
+        for conv in self.conversations():
+            conv.remove_state('{relation_name}.joining')
+
+
+    def get_zookeeper_units(self):
+        if not self.conversations():
+            raise Exception("Zookeeper private address not set")
+            
+        units = []        
+        for conv in self.conversations():
+            units.append((conv.get_remote('private-address'), conv.get_remote('port')))
+
+        return units
