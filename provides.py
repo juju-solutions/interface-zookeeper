@@ -25,21 +25,17 @@ class ZookeeperProvides(RelationBase):
     def joined(self):
         self.set_state('{relation_name}.connected')
 
-
     @hook('{provides:zookeeper}-relation-changed')
     def changed(self):
         self.set_state('{relation_name}.available')
-
 
     @hook('{provides:flume-agent}-relation-{broken,departed}')
     def broken(self):
         self.remove_state('{relation_name}.available')
         self.remove_state('{relation_name}.connected')
 
-
-    def send_port(self, port):        
+    def send_port(self, port):
         conv = self.conversation()
-        conv.set_remote(data = {
+        conv.set_remote(data={
             'port': port,
         })
-

@@ -14,6 +14,7 @@ from charms.reactive import RelationBase
 from charms.reactive import hook
 from charms.reactive import scopes
 
+
 class ZookeeperRequires(RelationBase):
     scope = scopes.UNIT
 
@@ -23,14 +24,12 @@ class ZookeeperRequires(RelationBase):
         conv.set_state('{relation_name}.connected')
         conv.remove_state('{relation_name}.departing')
 
-
     @hook('{requires:zookeeper}-relation-changed')
     def changed(self):
         conv = self.conversation()
         if self.get_zookeeper_units():
             conv.set_state('{relation_name}.joining')
             conv.set_state('{relation_name}.available')
-            
 
     @hook('{requires:zookeeper}-relation-departed')
     def departed(self):
@@ -39,23 +38,21 @@ class ZookeeperRequires(RelationBase):
         conv.remove_state('{relation_name}.connected')
         conv.set_state('{relation_name}.departing')
 
-
     def dismiss_departing(self):
         for conv in self.conversations():
             conv.remove_state('{relation_name}.departing')
-
 
     def dismiss_joining(self):
         for conv in self.conversations():
             conv.remove_state('{relation_name}.joining')
 
-
     def get_zookeeper_units(self):
         if not self.conversations():
             raise Exception("Zookeeper private address not set")
-            
-        units = []        
+
+        units = []
         for conv in self.conversations():
-            units.append((conv.get_remote('private-address'), conv.get_remote('port')))
+            units.append((conv.get_remote('private-address'),
+                          conv.get_remote('port')))
 
         return units
