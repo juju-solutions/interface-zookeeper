@@ -47,12 +47,10 @@ class ZookeeperRequires(RelationBase):
             conv.remove_state('{relation_name}.joining')
 
     def get_zookeeper_units(self):
-        if not self.conversations():
-            raise Exception("Zookeeper private address not set")
-
         units = []
         for conv in self.conversations():
-            units.append((conv.get_remote('private-address'),
-                          conv.get_remote('port')))
+            if conv.get_remote('port'):
+                units.append((conv.get_remote('private-address'),
+                              conv.get_remote('port')))
 
         return units
