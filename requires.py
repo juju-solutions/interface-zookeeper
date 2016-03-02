@@ -26,7 +26,7 @@ class ZookeeperRequires(RelationBase):
     @hook('{requires:zookeeper}-relation-changed')
     def changed(self):
         conv = self.conversation()
-        if self.get_zookeeper_units():
+        if self.zookeepers():
             conv.set_state('{relation_name}.ready')
         else:
             conv.remove_state('{relation_name}.ready')
