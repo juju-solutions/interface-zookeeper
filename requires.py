@@ -21,36 +21,29 @@ class ZookeeperRequires(RelationBase):
     @hook('{requires:zookeeper}-relation-joined')
     def joined(self):
         conv = self.conversation()
-        conv.set_state('{relation_name}.connected')
-        conv.remove_state('{relation_name}.departing')
+        conv.set_state('{relation_name}.joined')
 
     @hook('{requires:zookeeper}-relation-changed')
     def changed(self):
         conv = self.conversation()
         if self.get_zookeeper_units():
-            conv.set_state('{relation_name}.joining')
-            conv.set_state('{relation_name}.available')
+            conv.set_state('{relation_name}.ready')
+        else:
+            conv.remove_state('{relation_name}.ready')
 
     @hook('{requires:zookeeper}-relation-departed')
     def departed(self):
         conv = self.conversation()
-        conv.remove_state('{relation_name}.available')
-        conv.remove_state('{relation_name}.connected')
-        conv.set_state('{relation_name}.departing')
+        conv.remove_state('{relation_name}.ready')
+        conv.remove_state('{relation_name}.joined')
 
-    def dismiss_departing(self):
+    def zookeepers(self):
+        zks = []
         for conv in self.conversations():
-            conv.remove_state('{relation_name}.departing')
-
-    def dismiss_joining(self):
-        for conv in self.conversations():
-            conv.remove_state('{relation_name}.joining')
-
-    def get_zookeeper_units(self):
-        units = []
-        for conv in self.conversations():
-            if conv.get_remote('port'):
-                units.append((conv.get_remote('private-address'),
-                              conv.get_remote('port')))
-
-        return units
+            port = conv.get_remote('port')
+            if port:
+                zks.append({
+                    'host': conv.get_remote('private-address'),
+                    'port': port
+                })
+        return zks
