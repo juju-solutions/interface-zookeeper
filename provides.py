@@ -18,21 +18,20 @@ from charms.reactive import scopes
 class ZookeeperProvides(RelationBase):
     # Every unit connecting will get the same information
     scope = scopes.GLOBAL
-    relation_name = 'zookeeper'
 
     # Use some template magic to declare our relation(s)
     @hook('{provides:zookeeper}-relation-joined')
     def joined(self):
-        self.set_state('{relation_name}.connected')
+        self.set_state('{relation_name}.joined')
 
     @hook('{provides:zookeeper}-relation-changed')
     def changed(self):
-        self.set_state('{relation_name}.available')
+        self.set_state('{relation_name}.ready')
 
-    @hook('{provides:flume-agent}-relation-{broken,departed}')
-    def broken(self):
-        self.remove_state('{relation_name}.available')
-        self.remove_state('{relation_name}.connected')
+    @hook('{provides:zookeeper}-relation-departed')
+    def departed(self):
+        self.remove_state('{relation_name}.ready')
+        self.remove_state('{relation_name}.joined')
 
     def send_port(self, port):
         conv = self.conversation()
