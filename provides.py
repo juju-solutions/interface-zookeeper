@@ -33,8 +33,9 @@ class ZookeeperProvides(RelationBase):
         self.remove_state('{relation_name}.ready')
         self.remove_state('{relation_name}.joined')
 
-    def send_port(self, port):
+    def send_port(self, port, rest_port):
         conv = self.conversation()
         conv.set_remote(data={
             'port': port,
+            'rest_port': rest_port,
         })
