@@ -16,7 +16,7 @@ interface layer will set the following states, as appropriate:
   though the client service may not be available yet. At this point,
   the provider should broadcast Zookeeper configuration details using:
 
-    * `send_port(port)`
+    * `send_port(port, rest_port)`
 
 
   * `{relation_name}.ready`  Zookeeper configuration details have been sent.
@@ -29,7 +29,7 @@ Zookeeper provider example:
 @when('client.joined')
 @when_not('client.ready')
 def send_config(client):
-    client.send_port(get_zookeeper_port())
+    client.send_port(get_zookeeper_port(), get_zookeeper_rest_port())
 ```
 
 
@@ -44,7 +44,8 @@ layer will set the following states, as appropriate:
   * `{relation_name}.ready`  Zookeeper is now ready for clients. The client
   charm should get Zookeeper configuration details using:
 
-    * `zookeepers()` returns a list of zookeeper {host: xyz, port: n} dicts
+    * `zookeepers()` returns a list of zookeeper 
+                     {host: xyz, port: n, rest_port: m} dicts
 
 
 Zookeeper client example:
