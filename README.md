@@ -45,7 +45,7 @@ layer will set the following states, as appropriate:
   charm should get Zookeeper configuration details using:
 
     * `zookeepers()` returns a list of zookeeper 
-                     {host: xyz, port: n, rest_port} dicts
+                     {host: xyz, port: n, rest_port: m} dicts
 
 
 Zookeeper client example:
