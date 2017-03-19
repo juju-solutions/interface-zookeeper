@@ -48,6 +48,6 @@ class ZookeeperRequires(RelationBase):
                 zks.append({
                     'host': host,
                     'port': port,
-                    'rest_port': rest_port
+                    'rest_port': rest_port,
                 })
         return zks

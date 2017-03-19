@@ -38,7 +38,8 @@ class ZookeeperProvides(RelationBase):
         conv.set_remote(data={
             'port': port,
             'rest_port': rest_port,
-            'host': host
+            'host': host,
         })
 
+    # Synonym for send_connection (for now)
     send_port = send_connection

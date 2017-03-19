@@ -44,8 +44,9 @@ layer will set the following states, as appropriate:
   * `{relation_name}.ready`  Zookeeper is now ready for clients. The client
   charm should get Zookeeper configuration details using:
 
-    * `zookeepers()` returns a list of zookeeper 
-                     {host: xyz, port: n, rest_port: m} dicts
+    * `zookeepers()` returns a list of zookeeper unit dicts:
+
+          {host: xyz, port: n, rest_port: m}
 
 
 Zookeeper client example:
